@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Canadian Innovation Timeline — A Journey Through History</title>
+  <meta name="description" content="An interactive horizontal timeline exploring key moments in Canadian technological innovation, from the National Research Council to the Canadarm and beyond." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+
+  <!-- Background Effects -->
+  <div class="bg-effects" aria-hidden="true">
+    <div class="bg-effects__gradient"></div>
+    <div class="bg-effects__grid"></div>
+    <div class="bg-effects__orb bg-effects__orb--1"></div>
+    <div class="bg-effects__orb bg-effects__orb--2"></div>
+    <div class="bg-effects__orb bg-effects__orb--3"></div>
+  </div>
+
+  <!-- Intro Overlay -->
+  <div class="intro-overlay" id="intro-overlay">
+    <p class="intro-overlay__badge">Interactive Exhibit</p>
+    <h1 class="intro-overlay__title">
+      <span>Canadian Innovation</span><br />Through the Decades
+    </h1>
+    <p class="intro-overlay__subtitle">
+      Explore the breakthroughs that shaped a nation — from the first pacemaker
+      to the Canadarm, mapped across an interactive timeline.
+    </p>
+    <button class="intro-overlay__cta" id="intro-btn">
+      Begin Exploring
+      <span class="intro-overlay__cta-arrow">→</span>
+    </button>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header__title">
+      <span>Canadian Innovation</span> Timeline
+    </div>
+    <div class="header__hint">
+      <div class="header__hint-icon"></div>
+      Scroll or drag to navigate
+    </div>
+  </header>
+
+  <!-- Timeline -->
+  <div class="timeline-viewport" id="timeline-viewport">
+    <!-- The horizontal line -->
+    <div class="timeline-line" aria-hidden="true">
+      <div class="timeline-line__track">
+        <div class="timeline-line__glow"></div>
+      </div>
+    </div>
+
+    <!-- Cards track (populated by JS) -->
+    <div class="timeline-track" id="timeline-track"></div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="progress-bar" aria-hidden="true">
+    <div class="progress-bar__fill" id="progress-fill"></div>
+  </div>
+
+  <!-- Year Navigation -->
+  <nav class="year-nav" id="year-nav" aria-label="Timeline navigation"></nav>
+
+  <script src="script.js"></script>
+</body>
+</html>
