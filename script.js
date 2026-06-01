@@ -6,6 +6,7 @@ const timelineData = [
     id: "nrc",
     year: "1916",
     accent: "blue",
+    image: "assets/images/nrc.png",
     title: "National Research Council of Canada",
     org: "The Canadian Encyclopedia",
     url: "https://thecanadianencyclopedia.ca/en/article/national-research-council-of-canada",
@@ -22,6 +23,7 @@ const timelineData = [
     id: "air-canada",
     year: "1937",
     accent: "rose",
+    image: "assets/images/air_canada.png",
     title: "Air Canada",
     org: "The Canadian Encyclopedia",
     url: "https://thecanadianencyclopedia.ca/en/article/air-canada",
@@ -38,6 +40,7 @@ const timelineData = [
     id: "pacemaker",
     year: "1950",
     accent: "emerald",
+    image: "assets/images/pacemaker.png",
     title: "John Alexander Hopps & the Pacemaker",
     org: "The Canadian Encyclopedia",
     url: "https://thecanadianencyclopedia.ca/en/article/john-a-hopps",
@@ -55,6 +58,7 @@ const timelineData = [
     id: "trans-canada-hwy",
     year: "1950–1971",
     accent: "amber",
+    image: "assets/images/highway.png",
     title: "Trans-Canada Highway",
     org: "The Canadian Encyclopedia",
     url: "https://thecanadianencyclopedia.ca/en/article/trans-canada-highway",
@@ -71,6 +75,7 @@ const timelineData = [
     id: "cbc",
     year: "1952",
     accent: "indigo",
+    image: "assets/images/cbc.png",
     title: "CBC Television Launches",
     org: "The Canadian Encyclopedia",
     url: "https://thecanadianencyclopedia.ca/en/article/canadian-broadcasting-corporation",
@@ -91,6 +96,7 @@ const timelineData = [
     id: "st-lawrence",
     year: "1959",
     accent: "cyan",
+    image: "assets/images/seaway.png",
     title: "St. Lawrence Seaway",
     org: "The Canadian Encyclopedia",
     url: "https://thecanadianencyclopedia.ca/en/article/st-lawrence-seaway",
@@ -107,6 +113,7 @@ const timelineData = [
     id: "space-tech",
     year: "1962",
     accent: "violet",
+    image: "assets/images/space_tech.png",
     title: "Canadian Space Technology",
     org: "The Canadian Encyclopedia",
     url: "https://thecanadianencyclopedia.ca/en/article/space-technology",
@@ -123,6 +130,7 @@ const timelineData = [
     id: "transoceanic",
     year: "1956–1971",
     accent: "orange",
+    image: "assets/images/telephony.png",
     title: "Direct Transoceanic Dialling",
     org: "EBSCO",
     url: "https://www.ebsco.com/research-starters/history/direct-transoceanic-dialing-begins",
@@ -155,6 +163,7 @@ const progressFill = document.getElementById("progress-fill");
 const yearNav = document.getElementById("year-nav");
 const introOverlay = document.getElementById("intro-overlay");
 const introBtn = document.getElementById("intro-btn");
+const bgImagesContainer = document.getElementById("bg-images");
 
 // ============================================
 // STATE
@@ -241,18 +250,8 @@ function buildTimeline() {
 
       if (expanded) {
         expandedCardId = item.id;
-        // Shift camera so expanded content is visible
-        // "above" cards grow upward — shift view up (negative Y = track moves up, viewport shows higher)
-        // "below" cards grow downward — shift view down
-        const shiftAmount = 160;
-        if (position === "above") {
-          targetScrollY = -shiftAmount;
-        } else {
-          targetScrollY = shiftAmount;
-        }
       } else {
         expandedCardId = null;
-        targetScrollY = 0;
       }
 
       // Recalculate max scroll after expanding
@@ -269,6 +268,20 @@ function buildTimeline() {
     dot.style.background = `var(--accent-${item.accent})`;
     dot.addEventListener("click", () => scrollToCard(index));
     yearNav.appendChild(dot);
+  });
+}
+
+// ============================================
+// BUILD BACKGROUND IMAGES
+// ============================================
+function buildBackgroundImages() {
+  if (!bgImagesContainer) return;
+  timelineData.forEach((item, index) => {
+    const bgItem = document.createElement("div");
+    bgItem.className = "bg-effects__image-item";
+    bgItem.id = `bg-image-${item.id}`;
+    bgItem.style.backgroundImage = `url('${item.image}')`;
+    bgImagesContainer.appendChild(bgItem);
   });
 }
 
@@ -324,6 +337,9 @@ function animate() {
   // Update card visibility / parallax
   updateCardVisibility();
 
+  // Update background image dynamic states
+  updateBackgroundImages();
+
   // Update nav dots
   updateNavDots();
 
@@ -343,6 +359,33 @@ function updateCardVisibility() {
       card.classList.add("in-view");
     } else {
       card.classList.remove("in-view");
+    }
+  });
+}
+
+function updateBackgroundImages() {
+  const cards = track.querySelectorAll(".timeline-card");
+  const viewportCenter = scrollX + viewport.clientWidth / 2;
+
+  timelineData.forEach((item, index) => {
+    const card = cards[index];
+    if (!card) return;
+
+    const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+    const offsetFromCenter = cardCenter - viewportCenter;
+    const maxDistance = viewport.clientWidth * 0.65; // Fade distance
+
+    const t = Math.min(1, Math.abs(offsetFromCenter) / maxDistance);
+    const weight = 1 - (t * t * (3 - 2 * t)); // Smoothstep curve
+
+    const bgItem = document.getElementById(`bg-image-${item.id}`);
+    if (bgItem) {
+      // Set dynamic opacity based on proximity to center
+      bgItem.style.opacity = weight;
+
+      // Subtle parallax shift and scale zoom
+      const parallaxX = offsetFromCenter * -0.06;
+      bgItem.style.transform = `translateX(${parallaxX}px) scale(${1.02 + weight * 0.03})`;
     }
   });
 }
@@ -456,6 +499,7 @@ function dismissIntro() {
 // ============================================
 function init() {
   buildTimeline();
+  buildBackgroundImages();
   calculateMaxScroll();
 
   // Events
